@@ -1,0 +1,70 @@
+package test.java;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+
+
+public class TestCase3
+{	
+	public static WebDriver w;
+	public static Select s1,s2;
+	
+	@BeforeTest
+	public void Initialization()
+	{
+		System.setProperty("webdriver.chrome.driver", "D:\\\\selenium\\\\chromedriver.exe"); //need to configure******
+		
+		ChromeOptions options = new ChromeOptions();  // For Headless browser
+		options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200","--ignore-certificate-errors");  
+		w= new ChromeDriver(options);  
+		
+		System.out.println("Webdriver initialized****");
+		
+		w.manage().deleteAllCookies();
+		w.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		w.manage().timeouts().pageLoadTimeout(40, TimeUnit.SECONDS);
+		w.get("http://192.168.83.179:8080/RCN/");
+		System.out.println("**Homepage loaded**");
+	}
+
+	@Test
+	public void Login()
+	{
+		WebElement uname=w.findElement(By.xpath("//input[@id='userId']")); //username 
+		
+		WebElement password=w.findElement(By.xpath("//input[@id='password']"));//password
+		
+		WebElement SubmitButton=w.findElement(By.xpath("//a[@class='btn btn-danger']"));
+		
+		uname.sendKeys("superadmin");
+		password.sendKeys("Asdf@1234");
+		SubmitButton.click();
+		
+		
+		System.out.println("**Logged In **");
+		System.out.println("**Selecting dropdowns **");
+		
+		s1=new Select(w.findElement(By.xpath("//select[@name='bankName']")));
+		s1.selectByValue("991");
+		System.out.println("Bank option selected");
+		s2=new Select(w.findElement(By.xpath("//select[@name='product_code']")));
+		System.out.println("Product option selected");
+		s2.selectByValue("P024");
+		
+		WebElement ProceedButton=w.findElement(By.xpath("//a[@class='btn btn-danger']"));
+		
+		ProceedButton.click();
+		System.out.println("Proceed clicked");
+		
+		System.out.println("The title of page is "+w.getTitle());
+	}
+}
